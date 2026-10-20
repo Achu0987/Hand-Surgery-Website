@@ -21,7 +21,7 @@ These block parts of the work. We have not guessed at any of them.
    - replace it with the plate image once supplied?
 8. **Illustration colours.** The 3D anatomy uses anatomical colours: muscle red, nerve yellow, vein blue, and so on. The "Under the skin" chapter has a colour key with text labels. We have treated these as part of the illustration, not interface colours. Is that acceptable, or should the figure be shown in tokens only?
 9. **Centres (S15).** S15 mentions linking "centres". The site has no centre pages. What are the centres?
-10. **Urgent-care wording.** The earlier drafts had a "When to get help sooner" box on every page telling readers to seek urgent care. That is safety advice, but it also conflicts with the "never urgent" voice rule and the "no treatment advice" limit. We have removed it pending a decision. One line remains in the footer and on the contact page, and it is still a draft: "If you think you need urgent care, contact emergency services." Please confirm the wording with Dr. Traverso.
+10. **Urgent-care wording.** The earlier drafts had a "When to get help sooner" box on every page telling readers to seek urgent care. That is safety advice, but it conflicts with the "never urgent" voice rule (§2) and the "no treatment advice" limit (§3). We have removed it, and the footer and contact page now show a `TODO(copy)` in its place, with the earlier line kept in the note: "If you think you need urgent care, contact emergency services." Please confirm with Dr. Traverso what, if any, wording the site should carry.
 11. **Error colour.** The palette has no error colour. Form errors use:
     - an accent border,
     - an "Error:" text prefix, and
@@ -96,5 +96,9 @@ These were in the earlier drafts. They are listed here as the brief asks. All of
 - **Copy deck.** `npm run copy:deck` writes `docs/copy/COPY-DECK.md`. It is the §7 table for every page: slot, text, word count, clinical review flag, owner, status and missing facts.
 - **No invented facts.** Treatment options, tests, practice-specific evaluation, the disclaimer (S12), the phone number and centres are all `TODO(copy)`.
 - **All visible text goes through the copy layer.** This includes navigation, buttons, form labels, the footer and every page, so nothing unapproved can reach production.
+- **Partners.** The physicians page has a "Working with the practice" section for partners (§1). Its details are `TODO(copy)`.
+- **Structure names and page titles.** The anatomy structure names (clinical review) and every page title and search description are now in the copy layer too.
+- **Voice pass.** Long sentences are split to one idea each, and medical terms come after the everyday words, in brackets.
+- **Production check.** A scan of the production build found none of the 203 draft lines in any page.
 - **Button labels are short verbs.** Schedule, Call THInc, Send, Refer a patient, Meet Dr. Traverso, Read guides, Go home and Start again.
 - **Copy lint.** `npm run lint:copy` now also blocks the brief's avoid list (cure, guaranteed, miracle, best, pain-free, fix, instantly, "you need surgery"), as well as em dashes, en dashes and emoji.

@@ -123,7 +123,15 @@ out.push("");
 out.push("Not clinical. Ray approves.");
 out.push("");
 out.push("| Key | Proposed text | Words | Status |\n| --- | --- | --- | --- |");
-for (const [k] of [...flat(draft.ui, "ui"), ...flat(draft.pages, "pages")]) out.push(`| \`${k}\` | ${show(pick(k))} | ${words(pick(k))} | ${status(k)} |`);
+for (const [k] of [...flat(draft.meta, "meta"), ...flat(draft.ui, "ui"), ...flat(draft.pages, "pages")]) out.push(`| \`${k}\` | ${show(pick(k))} | ${words(pick(k))} | ${status(k)} |`);
+out.push("");
+
+out.push("## Anatomy structure names");
+out.push("");
+out.push("Shown in the figure margins and the structure lists. Clinical review: Yes.");
+out.push("");
+out.push("| Key | Proposed text | Words | Clinical review | Status |\n| --- | --- | --- | --- | --- |");
+for (const [k] of flat(draft.anatomy.structures, "anatomy.structures")) out.push(`| \`${k}\` | ${show(pick(k))} | ${words(pick(k))} | Yes | ${status(k)} |`);
 out.push("");
 
 for (const c of conditions) {

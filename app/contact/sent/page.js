@@ -1,7 +1,8 @@
 import { ButtonLink, Container, Copy, Eyebrow, Todo } from "@/components/ui";
 import { site } from "@/lib/site";
+import { text } from "@/lib/copy";
 
-export const metadata = { title: "Request received" };
+export const metadata = { title: text("meta.sent") || undefined };
 
 export default function SentPage() {
   return (

@@ -1,9 +1,10 @@
 import { Container, Copy, Eyebrow, ScheduleButton, Todo } from "@/components/ui";
 import { site } from "@/lib/site";
+import { text } from "@/lib/copy";
 
 export const metadata = {
-  title: "About Dr. Purnell Traverso",
-  description: "Dr. Purnell Traverso, hand and wrist surgeon in Coral Springs, Florida.",
+  title: text("meta.about") || site.surgeon,
+  description: text("meta.aboutDescription") || undefined,
   alternates: { canonical: "/about" },
 };
 

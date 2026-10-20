@@ -3,6 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { makePose } from "@/lib/poses";
 import { Copy } from "@/components/ui";
+import { text } from "@/lib/copy";
+
+// Plain structure name for accessible labels (copy layer, anatomy.structures)
+const structureName = (anchor) => text(`anatomy.structures.${anchor}`) || anchor;
 
 const MARGIN_GAP = 12;
 // Narrow margins wrap long names onto more lines, so labels need more room
@@ -155,13 +159,13 @@ export default function HandViewer({ pose, label, structures = [], className = "
           <img src="/hand-poster.webp" alt="" className={`absolute inset-0 m-auto h-[85%] object-contain transition-opacity duration-700 ${ready ? "opacity-0" : "opacity-100"}`} />
           <div ref={mountRef} aria-hidden="true" className="absolute inset-0" />
           <div className={ready ? "" : "hidden"}>
-            {structures.map(([name], j) => (
+            {structures.map(([name, anchor], j) => (
               <button
                 key={name}
                 type="button"
                 data-dot={j}
                 onClick={() => selectFromFigure(name)}
-                aria-label={`${name}: show in the structure list`}
+                aria-label={`${structureName(anchor)}: show in the structure list`}
                 aria-pressed={selected === name}
                 style={{ visibility: "hidden" }}
                 className="absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-full"
@@ -184,14 +188,14 @@ export default function HandViewer({ pose, label, structures = [], className = "
         {structures.length > 0 && (
           <>
             <div className={`relative w-[104px] shrink-0 sm:w-[160px] ${ready ? "" : "invisible"}`} style={{ marginLeft: MARGIN_GAP }} aria-hidden="true">
-              {structures.map(([name], j) => (
+              {structures.map(([name, anchor], j) => (
                 <span
                   key={name}
                   data-label={j}
                   style={{ visibility: "hidden" }}
                   className={`absolute left-0 top-0 text-small leading-tight text-ink ${selected === name ? "font-medium underline underline-offset-4" : ""}`}
                 >
-                  {name}
+                  <Copy path={`anatomy.structures.${anchor}`} />
                 </span>
               ))}
             </div>
@@ -235,11 +239,11 @@ export default function HandViewer({ pose, label, structures = [], className = "
             <Copy path="ui.viewer.structures" />
           </p>
           <ul className="mt-2">
-            {structures.map(([name]) => (
+            {structures.map(([name, anchor]) => (
               <li key={name} className="border-b border-line">
                 <details ref={(el) => (detailsRef.current[name] = el)} onToggle={(e) => e.currentTarget.open && setSelected(name)} className="group py-2.5">
                   <summary className="flex min-h-8 cursor-pointer list-none items-center justify-between gap-4 font-medium [&::-webkit-details-marker]:hidden">
-                    <span className={selected === name ? "underline underline-offset-4" : ""}>{name}</span>
+                    <span className={selected === name ? "underline underline-offset-4" : ""}><Copy path={`anatomy.structures.${anchor}`} /></span>
                     <span className="text-small text-muted group-open:hidden">
                       <Copy path="ui.viewer.show" />
                     </span>

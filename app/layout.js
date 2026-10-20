@@ -6,6 +6,7 @@ import MobileActionBar from "@/components/MobileActionBar";
 import Motion from "@/components/motion/Motion";
 import { Copy, DraftBanner } from "@/components/ui";
 import { site } from "@/lib/site";
+import { text } from "@/lib/copy";
 
 // One family, weights 400 and 500 only (DESIGN.md §3)
 const geist = Geist({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-geist", display: "swap" });
@@ -13,10 +14,10 @@ const geist = Geist({ subsets: ["latin"], weight: ["400", "500"], variable: "--f
 export const metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `Hand and wrist surgeon in Coral Springs, FL | ${site.surgeon}`,
+    default: text("meta.siteTitle") ? `${text("meta.siteTitle")} | ${site.surgeon}` : site.name,
     template: `%s | ${site.name}`,
   },
-  description: `Plain-language guides to hand and wrist symptoms, and how to reach ${site.surgeon}, hand and wrist surgeon in Coral Springs, Florida.`,
+  description: text("meta.siteDescription") || undefined,
   // Pre-launch: keep the site out of search indexes until approved.
   robots: { index: false, follow: false },
   openGraph: { type: "website", siteName: site.name, locale: "en_US" },

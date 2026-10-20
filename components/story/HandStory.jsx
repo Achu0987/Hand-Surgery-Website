@@ -7,6 +7,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { chapters, structures } from "@/lib/story";
 import { mixPose } from "@/lib/poses";
 import { Copy, Todo } from "@/components/ui";
+import { text } from "@/lib/copy";
+
+// Plain structure name for accessible labels (copy layer, anatomy.structures)
+const structureName = (anchor) => text(`anatomy.structures.${anchor}`) || anchor;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -188,13 +192,13 @@ export default function HandStory() {
                   {/* Structure markers on the figure: selectable, never labelled in place */}
                   <div className={ready ? "" : "hidden"}>
                     {chapters.map((c, i) =>
-                      c.structures.map(([label], j) => (
+                      c.structures.map(([label, anchor], j) => (
                         <button
                           key={`${c.id}-${label}`}
                           type="button"
                           data-dot={`${i}-${j}`}
                           onClick={() => selectFromFigure(label)}
-                          aria-label={`${label}: show in the structure list`}
+                          aria-label={`${structureName(anchor)}: show in the structure list`}
                           aria-pressed={selected === label}
                           style={{ opacity: 0, visibility: "hidden" }}
                           className="absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-full"
@@ -214,14 +218,14 @@ export default function HandStory() {
                 {/* Margin labels, every width: never on the figure */}
                 <div className={`relative w-[104px] shrink-0 lg:w-[180px] ${ready ? "" : "invisible"}`} style={{ marginLeft: MARGIN_GAP }} aria-hidden="true">
                   {chapters.map((c, i) =>
-                    c.structures.map(([label], j) => (
+                    c.structures.map(([label, anchor], j) => (
                       <span
                         key={`${c.id}-${label}`}
                         data-label={`${i}-${j}`}
                         style={{ opacity: 0, visibility: "hidden" }}
                         className={`absolute left-0 top-0 text-small leading-tight ${selected === label ? "font-medium text-ink underline underline-offset-4" : "text-ink"}`}
                       >
-                        {label}
+                        <Copy path={`anatomy.structures.${anchor}`} />
                       </span>
                     )),
                   )}
@@ -268,11 +272,11 @@ export default function HandStory() {
                       <Copy path={`${base}.demo`} />
                     </p>
                     {c.legend && (
-                      <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2" aria-label="Colour key for the illustration">
-                        {c.legend.map(([label, color]) => (
-                          <li key={label} className="flex items-center gap-2 text-small">
+                      <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2" aria-label="Color key for the illustration">
+                        {c.legend.map(([anchor, color]) => (
+                          <li key={anchor} className="flex items-center gap-2 text-small">
                             <span className="h-3 w-3 rounded-full border border-line" style={{ background: color }} aria-hidden="true" />
-                            {label}
+                            <Copy path={`anatomy.structures.${anchor}`} />
                           </li>
                         ))}
                       </ul>
@@ -281,7 +285,7 @@ export default function HandStory() {
                       <p className="mt-5">
                         <Link href={`/conditions/${c.id}`} className="font-medium text-accent underline underline-offset-4">
                           <Copy path="home.anatomy.readGuide" />
-                          <span className="sr-only">: {chapters[i].structures.map(([l]) => l).join(", ")}</span>
+                          <span className="sr-only">: {chapters[i].structures.map(([, a]) => structureName(a)).join(", ")}</span>
                         </Link>
                       </p>
                     )}
@@ -306,7 +310,7 @@ export default function HandStory() {
                   className="group py-3"
                 >
                   <summary className="flex min-h-8 cursor-pointer list-none items-center justify-between gap-4 font-medium [&::-webkit-details-marker]:hidden">
-                    <span className={selected === s.label ? "underline underline-offset-4" : ""}>{s.label}</span>
+                    <span className={selected === s.label ? "underline underline-offset-4" : ""}><Copy path={`anatomy.structures.${s.anchor}`} /></span>
                     <span className="text-small text-muted group-open:hidden">
                       <Copy path="ui.viewer.show" />
                     </span>

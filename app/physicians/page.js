@@ -1,14 +1,15 @@
 import { Container, Copy, CopyList, Eyebrow, Todo } from "@/components/ui";
 import { site } from "@/lib/site";
+import { text } from "@/lib/copy";
 
 export const metadata = {
-  title: "For referring physicians",
-  description: "Referral process, information to include, and contact routes for physicians referring to Dr. Purnell Traverso.",
+  title: text("meta.physicians") || site.surgeon,
+  description: text("meta.physiciansDescription") || undefined,
   alternates: { canonical: "/physicians" },
 };
 
-const TOC = ["scope", "how-to-refer", "include", "urgent", "reporting"];
-const TOC_KEYS = { scope: "scope", "how-to-refer": "refer", include: "include", urgent: "urgent", reporting: "reporting" };
+const TOC = ["scope", "how-to-refer", "include", "urgent", "reporting", "partners"];
+const TOC_KEYS = { scope: "scope", "how-to-refer": "refer", include: "include", urgent: "urgent", reporting: "reporting", partners: "partners" };
 const P = "pages.physicians";
 
 // Professional audience: denser, list-led, no reassurance copy.
@@ -108,6 +109,17 @@ export default function PhysiciansPage() {
           </h2>
           <p>
             <Todo>What the referring clinician receives after the first visit and after any procedure, and how</Todo>
+          </p>
+
+          {/* Partners are the brief's third audience (COPY-BRIEF.md §1) */}
+          <h2 id="partners">
+            <Copy path={`${P}.toc.partners`} />
+          </h2>
+          <p>
+            <Copy path={`${P}.partnersIntro`} />
+          </p>
+          <p>
+            <Todo>Who the practice partners with, and how a partner gets in touch</Todo>
           </p>
         </div>
       </Container>

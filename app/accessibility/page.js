@@ -1,6 +1,7 @@
 import { Container, Copy, CopyList, Eyebrow, Todo } from "@/components/ui";
+import { text } from "@/lib/copy";
 
-export const metadata = { title: "Accessibility", alternates: { canonical: "/accessibility" } };
+export const metadata = { title: text("meta.accessibility") || undefined, alternates: { canonical: "/accessibility" } };
 
 const P = "pages.accessibility";
 
