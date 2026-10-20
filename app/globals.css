@@ -1,0 +1,119 @@
+@import "tailwindcss";
+@import "./styles/tokens.css";
+
+/*
+  Tailwind is limited to the THInc tokens: the default palette, shadows and
+  letter spacing are switched off, so an off-palette class simply does
+  nothing. Tracking follows CLAUDE.md §5 (no custom letter spacing).
+*/
+@theme inline {
+  --color-*: initial;
+  --color-base: var(--base);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-logo-cyan: var(--logo-cyan);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+  --tracking-*: initial;
+
+  --font-*: initial;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: var(--card-radius);
+
+  --text-h1: var(--size-h1);
+  --text-h2: var(--size-h2);
+  --text-h3: var(--size-h3);
+  --text-body: var(--size-body);
+  --text-small: var(--size-small);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+
+body {
+  background: var(--base);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: var(--size-body);
+  line-height: var(--leading-body);
+  letter-spacing: normal;
+  overflow-x: clip;
+}
+
+h1, h2, h3, h4 { font-weight: 500; line-height: var(--leading-heading); }
+b, strong, th, dt { font-weight: 500; }
+
+::selection { background: var(--accent); color: var(--surface); }
+
+/* Visible focus on every interactive element. Never removed. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Page title: H2 size on phones, H1 from md up (DESIGN.md §3) */
+.type-title { font-size: var(--size-h2); font-weight: 500; line-height: var(--leading-heading); }
+@media (min-width: 48rem) { .type-title { font-size: var(--size-h1); } }
+.type-section { font-size: var(--size-h3); font-weight: 500; line-height: var(--leading-heading); }
+
+/* Reading text: one measure and rhythm for homepage and symptom pages */
+.reading { max-width: var(--measure); }
+.reading p, .reading ul, .reading ol { margin: 0 0 var(--paragraph-gap); }
+.reading ul { list-style: disc; padding-left: 1.25rem; }
+.reading ol { list-style: decimal; padding-left: 1.25rem; }
+.reading li { margin: 0.35em 0; padding-left: 0.25rem; }
+.reading li::marker { color: var(--muted); }
+.reading a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.reading h2 { font-size: var(--size-h3); margin: 2.5rem 0 0.75rem; }
+
+/* Draft copy (preview builds only): dotted underline, explained by the banner */
+.copy-draft {
+  text-decoration: underline dotted var(--muted);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+
+/* Visible TODO marker for missing copy, icons or images */
+.todo {
+  display: inline;
+  border: 1px dashed var(--muted);
+  border-radius: 4px;
+  padding: 0.05em 0.4em;
+  font-size: 0.875em;
+  color: var(--muted);
+  background: var(--surface);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.todo-icon {
+  display: inline-flex;
+  align-items: center;
+  border: 1px dashed currentColor;
+  border-radius: 4px;
+  padding: 0 0.3em;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
