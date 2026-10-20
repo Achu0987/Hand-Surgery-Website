@@ -1,19 +1,11 @@
-import { ButtonLink, Container, Copy } from "@/components/ui";
+import { ButtonLink, Container } from "@/components/ui";
 
 export default function NotFound() {
   return (
-    <div className="bg-surface">
-      <Container wide className="py-20 md:py-28">
-        <h1 className="type-title">
-          <Copy path="pages.notFound.title" />
-        </h1>
-        <p className="reading mt-4 text-muted">
-          <Copy path="pages.notFound.body" />
-        </p>
-        <ButtonLink href="/#symptoms" className="mt-8">
-          <Copy path="pages.notFound.cta" />
-        </ButtonLink>
-      </Container>
-    </div>
+    <Container className="py-24">
+      <h1 className="font-serif text-4xl font-semibold text-indigo-950">This page is not here</h1>
+      <p className="mt-4 text-lg text-ink-soft">It may have moved. You can start again from what you are feeling.</p>
+      <ButtonLink href="/#explore" className="mt-8">Start with a symptom</ButtonLink>
+    </Container>
   );
 }

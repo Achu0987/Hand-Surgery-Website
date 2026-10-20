@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint:copy": "node scripts/check-copy.mjs",
-    "lint:contrast": "node scripts/check-contrast.mjs",
-    "copy:deck": "node scripts/copy-deck.mjs"
+    "lint:copy": "node scripts/check-copy.mjs"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",

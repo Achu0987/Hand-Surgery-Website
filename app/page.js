@@ -1,8 +1,8 @@
 import Link from "next/link";
 import HandStory from "@/components/story/HandStory";
-import { ButtonLink, CallButton, Container, Copy, Eyebrow, IconTodo, ScheduleButton, Todo, Value } from "@/components/ui";
+import SplitWords from "@/components/motion/SplitWords";
+import { Container, Placeholder } from "@/components/ui";
 import { conditions } from "@/lib/conditions";
-import { resolve } from "@/lib/copy";
 import { site } from "@/lib/site";
 
 const jsonLd = {
@@ -14,184 +14,175 @@ const jsonLd = {
   url: site.url,
 };
 
-// Reading section on paper, divided by a hairline (DESIGN.md §4)
-function Section({ id, labelledBy, children }) {
-  return (
-    <section id={id} aria-labelledby={labelledBy} className="border-t border-line">
-      <Container wide className="py-16 md:py-24">
-        {children}
-      </Container>
-    </section>
-  );
-}
-
 export default function HomePage() {
-  const steps = resolve("home.visit.steps");
-
   return (
     <>
-      {/* Hero: white, patient first */}
-      <section id="symptoms" aria-labelledby="hero-heading" className="bg-surface">
-        <Container wide className="py-14 md:py-20">
-          <Eyebrow>
-            {site.role}, {site.city}
-          </Eyebrow>
-          <h1 id="hero-heading" className="type-title mt-3 max-w-3xl">
-            <Copy path="home.hero.title" />
-          </h1>
-          <p className="reading mt-4 text-muted">
-            <Copy path="home.hero.body" />
-          </p>
+      <div data-fullbleed>
+        <HandStory />
+      </div>
 
-          <h2 className="mt-10 text-small font-medium text-muted">
-            <Copy path="home.hero.chooser" />
-          </h2>
-          <ul data-reveal="stagger" className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {conditions.map((c) => (
-              <li key={c.slug}>
-                <Link
-                  href={`/conditions/${c.slug}`}
-                  className="flex h-full min-h-28 flex-col gap-3 rounded-card border border-line bg-surface p-5 hover:border-ink"
-                >
-                  <IconTodo />
-                  <span className="font-medium text-ink">
-                    &ldquo;<Copy path={`symptoms.${c.slug}.card`} />&rdquo;
-                  </span>
-                  <span className="mt-auto text-small text-muted">{c.name}</span>
-                </Link>
-              </li>
-            ))}
-            <li className="flex min-h-28 items-center rounded-card border border-dashed border-line p-5 text-small">
-              <Todo>Eighth symptom page, not yet named</Todo>
-            </li>
-          </ul>
-
-          <div className="mt-10 flex flex-wrap gap-3">
-            <ScheduleButton />
-            <CallButton />
-          </div>
-        </Container>
+      {/* Scroll-linked statement */}
+      <section aria-label="Our approach" className="overflow-hidden border-y border-line bg-paper py-14 sm:py-20">
+        <p data-marquee="-35" className="whitespace-nowrap font-serif text-[13vw] font-semibold leading-none tracking-tight text-ink sm:text-[9vw]">
+          Understand first <span className="text-coral">/</span> then decide <span className="text-coral">/</span> no pressure{" "}
+          <span className="text-coral">/</span>
+        </p>
+        <p data-marquee="25" aria-hidden="true" className="-ml-[30%] mt-2 whitespace-nowrap font-serif text-[13vw] font-semibold leading-none tracking-tight text-transparent [-webkit-text-stroke:1.5px_#0e0a3a] sm:text-[9vw]">
+          Listen <span>/</span> examine <span>/</span> explain <span>/</span> decide together <span>/</span>
+        </p>
       </section>
 
-      <HandStory />
-
-      <Section id="visit" labelledBy="visit-heading">
-        <h2 id="visit-heading" className="type-section">
-          <Copy path="home.visit.title" />
-        </h2>
-        <ol data-reveal="stagger" className="mt-8 grid gap-x-10 border-t border-line sm:grid-cols-2 lg:grid-cols-4 lg:border-t-0">
-          {Array.isArray(steps.value) &&
-            steps.value.map((s, i) => (
-              <li key={i} className="border-b border-line py-5 lg:border-b-0 lg:border-t">
-                <span className="text-small text-muted">
-                  <Copy path="pages.home.step" /> {i + 1}
-                </span>
-                <p className="mt-2">
-                  <Value status={steps.status} value={s} />
-                </p>
+      {/* Guides: pinned horizontal track */}
+      <section data-hscroll aria-labelledby="guides-heading" className="relative overflow-hidden bg-ink text-white on-dark">
+        <div className="flex min-h-[100svh] flex-col justify-center py-16">
+          <Container>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">Guides</p>
+            <h2 id="guides-heading" data-reveal="words" className="mt-3 max-w-3xl font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+              <SplitWords text="Seven common conditions, explained in plain words." />
+            </h2>
+          </Container>
+          <div className="mt-12 overflow-x-auto pb-4 [scrollbar-width:none] lg:overflow-visible">
+            <ul data-track className="flex w-max gap-5 px-4 sm:px-6 lg:px-[max(2rem,calc((100vw-72rem)/2+2rem))]">
+              {conditions.map((c, i) => (
+                <li key={c.slug} className="w-[78vw] max-w-[380px] shrink-0">
+                  <Link
+                    href={`/conditions/${c.slug}`}
+                    className="group relative flex h-[460px] flex-col overflow-hidden rounded-[32px] bg-gradient-to-b from-[#1b1464] to-[#0b0833] p-7 ring-1 ring-white/10 transition duration-500 hover:-translate-y-2 hover:ring-cyan-300/60"
+                  >
+                    <img
+                      src={`/regions/${c.slug}.webp?v=2`}
+                      alt=""
+                      loading="lazy"
+                      className="pointer-events-none absolute inset-x-0 top-0 h-[64%] w-full object-cover opacity-90 transition duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-x-0 top-[40%] h-[30%] bg-gradient-to-b from-transparent to-[#0b0833]" />
+                    <span className="relative font-serif text-sm tabular-nums text-white/60">{String(i + 1).padStart(2, "0")}</span>
+                    <div className="relative mt-auto">
+                      <span className="text-xs font-bold uppercase tracking-[0.16em] text-cyan-300">{c.area}</span>
+                      <span className="mt-2 block font-serif text-2xl font-semibold leading-tight">{c.name}</span>
+                      <span className="mt-2 block text-white/70">&ldquo;{c.symptom}&rdquo;</span>
+                      <span className="mt-5 inline-flex items-center gap-2 font-bold text-cyan-200">
+                        Read the guide <span className="transition group-hover:translate-x-1">&rarr;</span>
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+              <li className="flex w-[60vw] max-w-[320px] shrink-0 items-center">
+                <Link href="/conditions" className="font-serif text-3xl font-semibold text-white underline decoration-cyan-300 underline-offset-8">
+                  All conditions &rarr;
+                </Link>
               </li>
-            ))}
-          {!Array.isArray(steps.value) && (
-            <li className="py-5">
-              <Todo>{steps.value.todo}</Todo>
-            </li>
-          )}
-        </ol>
-      </Section>
+            </ul>
+          </div>
+        </div>
+      </section>
 
-      <Section id="surgeon" labelledBy="surgeon-heading">
-        <div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
-          <div className="flex aspect-[4/5] w-full max-w-sm items-center justify-center rounded-card border border-line bg-surface p-8 text-center">
-            <Todo kind="image">Portrait of Dr. Traverso, supplied by the practice</Todo>
+      {/* Surgeon */}
+      <section aria-labelledby="surgeon-heading" className="py-24 sm:py-32">
+        <Container className="grid items-center gap-12 md:grid-cols-[0.9fr_1.1fr] md:gap-20">
+          <div data-reveal="mask" className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[32px] bg-gradient-to-br from-[#e4e7f5] via-[#f2f4fb] to-[#dbf3fd]">
+            <div data-parallax="0.3" className="absolute inset-0 flex items-center justify-center p-8 text-center">
+              <Placeholder>Portrait of Dr. Traverso, supplied by the practice</Placeholder>
+            </div>
           </div>
           <div>
-            <Eyebrow>
-              <Copy path="home.surgeon.eyebrow" />
-            </Eyebrow>
-            <h2 id="surgeon-heading" className="type-section mt-2">
-              {site.surgeon}
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal">Who you will see</p>
+            <h2 id="surgeon-heading" data-reveal="words" className="mt-3 font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+              <SplitWords text={site.surgeon} />
             </h2>
-            <p className="mt-1 text-muted">
+            <p data-reveal="up" className="mt-3 text-lg text-ink-soft">
               {site.role}, {site.city}
             </p>
-            <p className="reading mt-6">
-              <Copy path="home.surgeon.body" />
+            <p data-reveal="up" className="mt-6 text-xl leading-relaxed">
+              Your first appointment is a conversation: what you are noticing, how it affects your day, and what the options are,
+              including the ones that do not involve surgery.
+              <span className="ml-1 text-sm text-draft">(Proposed wording)</span>
             </p>
-            <dl className="mt-8 max-w-xl border-t border-line">
+            <dl data-reveal="stagger" className="mt-8 grid gap-3 sm:grid-cols-2">
               {[
-                ["training", "Medical school, residency and fellowship"],
-                ["certification", "Board certification details"],
-                ["affiliations", "Affiliated hospitals and surgery centers"],
-                ["languages", "Languages spoken in the practice"],
+                ["Training", "Medical school, residency and fellowship"],
+                ["Certification", "Board certification details"],
+                ["Hospital affiliations", "Affiliated hospitals and surgery centers"],
+                ["Languages", "Languages spoken in the practice"],
               ].map(([k, val]) => (
-                <div key={k} className="grid gap-1 border-b border-line py-4 sm:grid-cols-[12rem_1fr]">
-                  <dt>
-                    <Copy path={`pages.home.facts.${k}`} />
-                  </dt>
-                  <dd>
-                    <Todo>{val}</Todo>
+                <div key={k} className="rounded-2xl bg-white p-4 ring-1 ring-line">
+                  <dt className="text-sm font-bold">{k}</dt>
+                  <dd className="mt-1">
+                    <Placeholder>{val}</Placeholder>
                   </dd>
                 </div>
               ))}
             </dl>
-            <ButtonLink href="/about" variant="secondary" className="mt-8">
-              <Copy path="pages.home.meet" />
-            </ButtonLink>
+            <Link href="/about" className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full px-6 font-bold ring-1 ring-ink/20 transition hover:bg-white">
+              About Dr. Traverso &rarr;
+            </Link>
           </div>
-        </div>
-      </Section>
+        </Container>
+      </section>
 
-      <Section labelledBy="practical-heading">
-        <h2 id="practical-heading" className="type-section">
-          <Copy path="pages.home.practical.title" />
-        </h2>
-        <dl className="mt-8 grid gap-x-10 md:grid-cols-3">
-          {[
-            ["where", site.placeholders.address],
-            ["when", site.placeholders.hours],
-            ["insurance", site.placeholders.insurance],
-          ].map(([k, val]) => (
-            <div key={k} className="border-t border-line py-5">
-              <dt className="text-small text-muted">
-                <Copy path={`pages.home.practical.${k}`} />
-              </dt>
-              <dd className="mt-2">
-                <Todo>{val}</Todo>
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </Section>
+      {/* Practical details */}
+      <section aria-labelledby="practical-heading" className="pb-24">
+        <Container>
+          <h2 id="practical-heading" className="sr-only">
+            Practical details
+          </h2>
+          <div data-reveal="stagger" className="grid gap-4 md:grid-cols-3">
+            {[
+              ["Where", site.placeholders.address],
+              ["When", site.placeholders.hours],
+              ["Insurance", site.placeholders.insurance],
+            ].map(([k, val]) => (
+              <div key={k} className="rounded-[28px] bg-white p-7 ring-1 ring-line">
+                <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-teal">{k}</h3>
+                <p className="mt-3">
+                  <Placeholder>{val}</Placeholder>
+                </p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
 
-      {/* Professionals: visible, secondary */}
-      <Section labelledBy="pro-heading">
-        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+      {/* Professionals */}
+      <section aria-labelledby="pro-heading" className="relative overflow-hidden bg-ink py-24 text-white on-dark">
+        <div data-parallax="0.6" aria-hidden="true" className="absolute -right-20 top-0 h-[420px] w-[420px] rounded-full bg-cyan-400/20 blur-3xl" />
+        <Container className="relative flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <Eyebrow>
-              <Copy path="home.professionals.eyebrow" />
-            </Eyebrow>
-            <h2 id="pro-heading" className="type-section mt-2">
-              <Copy path="home.professionals.title" />
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">For referring physicians and partners</p>
+            <h2 id="pro-heading" data-reveal="words" className="mt-3 font-serif text-3xl font-semibold leading-tight sm:text-5xl">
+              <SplitWords text="Referral process, what to include, and how we report back." />
             </h2>
           </div>
-          <ButtonLink href="/physicians" variant="secondary">
-            <Copy path="home.professionals.link" />
-          </ButtonLink>
-        </div>
-      </Section>
+          <Link href="/physicians" data-reveal="up" className="inline-flex min-h-12 items-center rounded-full bg-cyan-300 px-6 font-bold text-ink transition hover:bg-cyan-200">
+            Referral information &rarr;
+          </Link>
+        </Container>
+      </section>
 
-      <Section labelledBy="cta-heading">
-        <h2 id="cta-heading" className="type-section">
-          <Copy path="home.closing.title" />
-        </h2>
-        <p className="reading mt-3 text-muted">
-          <Copy path="home.closing.body" />
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <ScheduleButton />
-          <CallButton />
-        </div>
-      </Section>
+      {/* Closing call to action */}
+      <section aria-labelledby="cta-heading" className="relative overflow-hidden py-28 sm:py-40">
+        <Container className="text-center">
+          <h2 id="cta-heading" data-reveal="words" className="mx-auto max-w-5xl font-serif text-5xl font-semibold leading-[0.98] tracking-tight sm:text-8xl">
+            <SplitWords text="When you are ready, we will listen." />
+          </h2>
+          <p data-reveal="up" className="mx-auto mt-6 max-w-xl text-lg text-ink-soft">
+            Leave your name and a way to reach you. No health details needed; the office will call you back.
+          </p>
+          <div data-reveal="up" className="mt-10 flex flex-wrap justify-center gap-3">
+            <Link href="/contact" className="inline-flex min-h-14 items-center rounded-full bg-ink px-8 text-lg font-bold text-white shadow-xl transition hover:-translate-y-0.5">
+              Request an appointment
+            </Link>
+            <Link href="/contact#call" className="inline-flex min-h-14 items-center rounded-full px-8 text-lg font-bold ring-1 ring-ink/20 transition hover:bg-white">
+              Prefer to call?
+            </Link>
+          </div>
+          <p className="mx-auto mt-14 max-w-2xl text-sm text-ink-soft">
+            This information is general and educational. It is not a diagnosis and is not a substitute for a consultation with a
+            clinician who can examine your hand.
+          </p>
+        </Container>
+      </section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </>

@@ -35,9 +35,8 @@ const HL_SETS = {
 
 const C = {
   skinLight: new THREE.Color("#ecd2c0"),
-  // Interface colours come from app/styles/tokens.css at runtime (see readTokens)
-  rimLight: new THREE.Color(),
-  rimDark: new THREE.Color(),
+  rimLight: new THREE.Color("#7fd8fb"),
+  rimDark: new THREE.Color("#9ee3fb"),
   bone: new THREE.Color("#efe6d6"),
   muscle: new THREE.Color("#a3402c"),
   ligament: new THREE.Color("#dfe6ee"),
@@ -45,32 +44,12 @@ const C = {
   vein: new THREE.Color("#2b3f93"),
   nerve: new THREE.Color("#ffc94d"),
   tendon: new THREE.Color("#ece3d3"),
-  // Highlighted structures use the site accent (DESIGN.md §2)
-  hot: new THREE.Color(),
-  glow: new THREE.Color(),
-  ember: new THREE.Color("#ff8a5c"),
+  hot: new THREE.Color("#00aeef"),
+  glow: new THREE.Color("#00aeef"),
+  ember: new THREE.Color("#00aeef"),
 };
 
 // ---------------------------------------------------------------- helpers ---
-
-// Reads the design tokens by name from app/styles/tokens.css (DESIGN.md §2),
-// so the figure's interface colours (highlight, lights, scan line) follow the
-// tokens. Anatomical colours in C are part of the illustration itself.
-function readTokens() {
-  const css = getComputedStyle(document.documentElement);
-  const get = (name) => css.getPropertyValue(name).trim();
-  const accent = get("--accent");
-  C.hot.set(accent);
-  C.glow.set(accent);
-  C.rimLight.set(get("--line"));
-  C.rimDark.set(get("--line"));
-  return {
-    surface: get("--surface"),
-    muted: get("--muted"),
-    // sRGB channels for the 2D canvas (THREE.Color stores linear values)
-    accentRgb: [1, 3, 5].map((i) => parseInt(accent.slice(i, i + 2), 16)).join(","),
-  };
-}
 
 function fingerOf(name) {
   for (let i = 0; i < 5; i++) for (const t of ORDINALS[i]) if (name.includes(`${t} `)) return i;
@@ -180,7 +159,6 @@ function rimMaterial() {
 
 export async function createHandEngine(container, options = {}) {
   const { markerEls = {}, reducedMotion = false, narrowLift = 0, onReady } = options;
-  const tokens = readTokens();
   const lowPower = (navigator.hardwareConcurrency || 4) <= 4 || window.innerWidth < 768;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -204,8 +182,8 @@ export async function createHandEngine(container, options = {}) {
   const camera = new THREE.PerspectiveCamera(26, 1, 0.01, 10);
   scene.add(camera);
 
-  scene.add(new THREE.HemisphereLight(tokens.surface, tokens.muted, 0.75));
-  const key = new THREE.DirectionalLight("#fff1e2", 2.4);
+  scene.add(new THREE.HemisphereLight("#f3f6ff", "#14104a", 0.75));
+  const key = new THREE.DirectionalLight("#f5f8ff", 2.4);
   key.position.set(0.35, 0.65, 0.9);
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
@@ -213,7 +191,7 @@ export async function createHandEngine(container, options = {}) {
   key.shadow.normalBias = 0.005;
   Object.assign(key.shadow.camera, { left: -0.14, right: 0.14, top: 0.14, bottom: -0.14, near: 0.5, far: 2 });
   scene.add(key);
-  const rimLight = new THREE.DirectionalLight(tokens.surface, 1.2);
+  const rimLight = new THREE.DirectionalLight("#6fd0f7", 2.0);
   rimLight.position.set(-1, 0.5, -1.2);
   scene.add(rimLight);
 
@@ -627,18 +605,17 @@ export async function createHandEngine(container, options = {}) {
     c.width = c.height = 256;
     const g = c.getContext("2d");
     const grd = g.createRadialGradient(128, 128, 20, 128, 128, 128);
-    // A thin accent ring marks the scan line (no glow)
-    grd.addColorStop(0, `rgba(${tokens.accentRgb},0)`);
-    grd.addColorStop(0.82, `rgba(${tokens.accentRgb},0)`);
-    grd.addColorStop(0.87, `rgba(${tokens.accentRgb},0.55)`);
-    grd.addColorStop(0.92, `rgba(${tokens.accentRgb},0)`);
+    grd.addColorStop(0, "rgba(0,174,239,0)");
+    grd.addColorStop(0.55, "rgba(0,174,239,0.08)");
+    grd.addColorStop(0.86, "rgba(150,225,252,0.9)");
+    grd.addColorStop(1, "rgba(0,174,239,0)");
     g.fillStyle = grd;
     g.fillRect(0, 0, 256, 256);
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
     return t;
   })();
-  const scanMat = new THREE.MeshBasicMaterial({ map: scanTex, transparent: true, depthWrite: false, side: THREE.DoubleSide, opacity: 0 });
+  const scanMat = new THREE.MeshBasicMaterial({ map: scanTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, opacity: 0 });
   const scanRing = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.14), scanMat);
   scanRing.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), up);
   scanRing.renderOrder = 30;
@@ -983,7 +960,7 @@ export async function createHandEngine(container, options = {}) {
       const v = hot(k);
       const w = cur[`hl_${k}`];
       for (const m of mats) {
-        // Lit-up structures take on the accent colour, so they read at a glance
+        // Lit-up structures turn coral and glow, so they read at a glance
         m.color.copy(m.userData.baseColor).lerp(C.hot, w * 0.85);
         m.emissive.copy(C.hot);
         const extra = k === "trigger" ? demo.triggerCatch : k === "thumb" ? demo.thumbFlash : k === "dequervain" ? demo.dqStretch : k === "scaphoid" ? demo.fallFlash : 0;
@@ -1004,8 +981,7 @@ export async function createHandEngine(container, options = {}) {
     }
     if (bestR && bestW > 0.02) {
       anchorWorld(bestR, glow.position);
-      // No decorative glow on the light figure
-      glowMat.opacity = 0;
+      glowMat.opacity = Math.min(1, bestW * 1.2) * (0.2 + 0.2 * breathe) * (0.5 + 0.5 * dark);
       glow.scale.setScalar(0.018 + 0.008 * breathe);
     } else glowMat.opacity = 0;
 
@@ -1064,9 +1040,7 @@ export async function createHandEngine(container, options = {}) {
     updateDemos(time);
     applyCurls();
     eMat.uniforms.uTime.value = motion ? time : 0;
-    // Decorative embers are off: calm, clinical figure (DESIGN.md §1)
-    eMat.uniforms.uAlpha.value = 0;
-    embers.visible = false;
+    eMat.uniforms.uAlpha.value = 0.35 + cur.dark * 0.45;
     eMat.uniforms.uScale.value = renderer.domElement.height;
     // Arteries pulse at a resting heart rate when the vessels are on show
     if (shared.arteries) {

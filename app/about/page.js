@@ -1,58 +1,45 @@
-import { Container, Copy, Eyebrow, ScheduleButton, Todo } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow, Placeholder } from "@/components/ui";
 import { site } from "@/lib/site";
-import { text } from "@/lib/copy";
 
 export const metadata = {
-  title: text("meta.about") || site.surgeon,
-  description: text("meta.aboutDescription") || undefined,
+  title: "About Dr. Purnell Traverso",
+  description: "Dr. Purnell Traverso, hand and wrist surgeon in Coral Springs, Florida.",
   alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
   return (
-    <>
-      <div className="border-b border-line bg-surface">
-        <Container wide className="py-10 md:py-14">
-          <Eyebrow>
-            <Copy path="pages.about.eyebrow" />
-          </Eyebrow>
-          <h1 className="type-title mt-3">{site.surgeon}</h1>
-          <p className="mt-2 text-muted">
-            {site.role}, {site.city}
-          </p>
-        </Container>
+    <Container className="grid gap-12 py-14 sm:py-20 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
+      <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-[32px] bg-gradient-to-br from-indigo-100 to-cyan-100 ring-1 ring-line">
+        <div className="absolute inset-0 flex items-center justify-center p-8 text-center">
+          <Placeholder>Portrait, supplied by the practice</Placeholder>
+        </div>
       </div>
-      <Container wide className="grid gap-12 py-10 md:grid-cols-[0.7fr_1.3fr] md:gap-16 md:py-14">
-        <div className="flex aspect-[4/5] w-full max-w-sm items-center justify-center rounded-card border border-line bg-surface p-8 text-center">
-          <Todo kind="image">Portrait, supplied by the practice</Todo>
-        </div>
-        <div className="reading">
-          <h2 className="mt-0!">
-            <Copy path="pages.about.approach" />
-          </h2>
+      <div>
+        <Eyebrow>About the surgeon</Eyebrow>
+        <h1 className="mt-3 font-serif text-4xl font-semibold text-indigo-950 sm:text-5xl">{site.surgeon}</h1>
+        <p className="mt-2 text-lg text-ink-soft">
+          {site.role}, {site.city}
+        </p>
+        <div className="prose-clinical mt-8">
+          <h2 style={{ marginTop: 0 }}>Approach to care</h2>
           <p>
-            <Todo>In Dr. Traverso&apos;s own words: how they approach a first consultation and treatment decisions</Todo>
+            <Placeholder>In Dr. Traverso&apos;s own words: how they approach a first consultation and treatment decisions</Placeholder>
           </p>
-          <h2>
-            <Copy path="pages.about.training" />
-          </h2>
+          <h2>Training and certification</h2>
           <ul>
-            <li><Todo>Medical school</Todo></li>
-            <li><Todo>Residency</Todo></li>
-            <li><Todo>Hand surgery fellowship</Todo></li>
-            <li><Todo>Board certification</Todo></li>
+            <li><Placeholder>Medical school</Placeholder></li>
+            <li><Placeholder>Residency</Placeholder></li>
+            <li><Placeholder>Hand surgery fellowship</Placeholder></li>
+            <li><Placeholder>Board certification</Placeholder></li>
           </ul>
-          <h2>
-            <Copy path="pages.about.affiliations" />
-          </h2>
-          <p><Todo>Affiliations, as confirmed by the practice</Todo></p>
-          <h2>
-            <Copy path="pages.about.memberships" />
-          </h2>
-          <p><Todo>Memberships, as confirmed by the practice</Todo></p>
-          <ScheduleButton className="mt-6" />
+          <h2>Hospital and surgery center affiliations</h2>
+          <p><Placeholder>Affiliations, as confirmed by the practice</Placeholder></p>
+          <h2>Professional memberships</h2>
+          <p><Placeholder>Memberships, as confirmed by the practice</Placeholder></p>
         </div>
-      </Container>
-    </>
+        <ButtonLink href="/contact" className="mt-10">Request an appointment</ButtonLink>
+      </div>
+    </Container>
   );
 }

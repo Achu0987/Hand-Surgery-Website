@@ -1,36 +1,25 @@
-import { ButtonLink, Container, Copy, Eyebrow, Todo } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow, Placeholder } from "@/components/ui";
 import { site } from "@/lib/site";
-import { text } from "@/lib/copy";
 
-export const metadata = { title: text("meta.sent") || undefined };
+export const metadata = { title: "Request received" };
 
 export default function SentPage() {
   return (
-    <div className="bg-surface">
-      <Container wide className="py-16 md:py-24">
-        <div className="max-w-2xl">
-          <Eyebrow>
-            <Copy path="pages.sent.eyebrow" />
-          </Eyebrow>
-          <h1 className="type-title mt-3">
-            <Copy path="pages.sent.title" />
-          </h1>
-          <p className="reading mt-5 text-muted">
-            <Copy path="pages.sent.body" /> <Todo>{site.placeholders.callback}</Todo>
-          </p>
-          <p className="mt-4 border-l-2 border-line pl-4 text-small text-muted">
-            <Copy path="pages.sent.prototype" />
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href="/#symptoms">
-              <Copy path="pages.sent.read" />
-            </ButtonLink>
-            <ButtonLink href="/" variant="secondary">
-              <Copy path="pages.sent.home" />
-            </ButtonLink>
-          </div>
+    <Container className="py-20 sm:py-28">
+      <div className="max-w-2xl">
+        <Eyebrow>Thank you</Eyebrow>
+        <h1 className="mt-3 font-serif text-4xl font-semibold text-indigo-950 sm:text-5xl">Your request is with the office</h1>
+        <p className="mt-5 text-lg text-ink-soft">
+          Someone will call or email you to find a time. <Placeholder>{site.placeholders.callback}</Placeholder>
+        </p>
+        <p className="mt-4 rounded-2xl bg-draft-bg px-5 py-4 text-draft">Prototype note: this preview does not send or store anything you type.</p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <ButtonLink href="/conditions">Keep reading the guides</ButtonLink>
+          <ButtonLink href="/" variant="ghost">
+            Back to home
+          </ButtonLink>
         </div>
-      </Container>
-    </div>
+      </div>
+    </Container>
   );
 }

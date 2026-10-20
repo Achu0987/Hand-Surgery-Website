@@ -1,119 +1,71 @@
 import Link from "next/link";
-import { resolve, SHOW_DRAFTS } from "@/lib/copy";
 
-export function Container({ className = "", wide = false, children, ...rest }) {
+export function Container({ className = "", children, ...rest }) {
   return (
-    <div className={`mx-auto w-full ${wide ? "max-w-[82rem]" : "max-w-6xl"} px-4 sm:px-6 lg:px-8 ${className}`} {...rest}>
+    <div className={`mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 ${className}`} {...rest}>
       {children}
     </div>
   );
 }
 
-// Visible marker for anything not yet supplied: TODO(copy), TODO(image)...
-export function Todo({ kind = "copy", children }) {
+// Visible marker for content the practice still has to supply.
+export function Placeholder({ children }) {
   return (
-    <span className="todo">
-      TODO({kind}){children ? <>: {children}</> : null}
+    <span className="placeholder">
+      <span className="sr-only">Placeholder: </span>[{children}]
     </span>
   );
 }
 
-// The final icon set has not been supplied (DESIGN.md §6). Marks the spot in
-// every build; never replaced with a stand-in icon.
-export function IconTodo() {
+// Marks proposed clinical wording that has not been reviewed by the surgeon.
+export function DraftTag({ label = "Draft, pending surgeon review" }) {
   return (
-    <span className="todo-icon" aria-hidden="true">
-      TODO(icon)
+    <span className="ml-1 inline-flex translate-y-[-1px] items-center rounded-full bg-draft-bg px-2 py-0.5 align-middle text-[11px] font-bold uppercase tracking-wide text-draft ring-1 ring-draft/25">
+      {label}
     </span>
   );
 }
 
-// One resolved copy value: approved text, marked draft text, or a TODO.
-export function Value({ status, value }) {
-  if (value && typeof value === "object" && "todo" in value) return <Todo>{value.todo}</Todo>;
-  if (status === "draft") return <span className="copy-draft">{value}</span>;
-  return value;
-}
-
-export function Copy({ path }) {
-  return <Value {...resolve(path)} />;
-}
-
-// A list slot (array of strings and todo entries)
-export function CopyList({ path, ordered = false, className = "" }) {
-  const { status, value } = resolve(path);
-  if (!Array.isArray(value)) return <p className={className}><Value status={status} value={value} /></p>;
-  const Tag = ordered ? "ol" : "ul";
+export function DraftNotice({ children }) {
   return (
-    <Tag className={className}>
-      {value.map((item, i) => (
-        <li key={i}>
-          <Value status={status} value={item} />
-        </li>
-      ))}
-    </Tag>
-  );
-}
-
-export function DraftBanner() {
-  if (!SHOW_DRAFTS) return null;
-  return (
-    <div className="border-b border-line bg-base">
-      <Container className="py-2 text-small text-muted">
-        Review build. <span className="copy-draft">Dotted underlines</span> mark draft copy awaiting approval.{" "}
-        <span className="todo">TODO</span> marks content still to be supplied.
-      </Container>
+    <div className="rounded-2xl border border-draft/25 bg-draft-bg px-5 py-4 text-[0.95rem] text-ink" role="note">
+      <p className="font-bold text-draft">Draft clinical content</p>
+      <p className="mt-1">
+        {children ||
+          "This page is proposed wording for the practice. It has not yet been reviewed by Dr. Traverso and must not be published until it has."}
+      </p>
     </div>
   );
 }
 
-// S12. The cyan rule is one of the two approved cyan uses (DESIGN.md §2).
 export function Disclaimer({ className = "" }) {
   return (
-    <p className={`border-l-[3px] border-logo-cyan pl-4 text-small text-muted ${className}`}>
-      <Copy path="site.disclaimer" />
+    <p className={`text-sm text-ink-soft ${className}`}>
+      This information is general and educational. It is not a diagnosis and is not a substitute for a consultation with a
+      clinician who can examine your hand.
     </p>
   );
 }
 
-export function Eyebrow({ children, className = "" }) {
-  return <p className={`text-small font-medium text-muted ${className}`}>{children}</p>;
+export function Eyebrow({ children, dark = false }) {
+  return (
+    <p className={`text-sm font-bold uppercase tracking-[0.14em] ${dark ? "text-cyan-300" : "text-cyan-700"}`}>{children}</p>
+  );
 }
 
-const buttonStyles = {
-  // One filled accent action per section; its outlined secondary may sit beside
-  // it (DESIGN.md §2, §5). Other emphasis uses ink.
-  primary: "bg-accent text-surface hover:opacity-90",
-  secondary: "bg-transparent text-accent ring-1 ring-inset ring-accent hover:bg-surface",
-};
-
 export function ButtonLink({ href, children, variant = "primary", className = "" }) {
+  const styles = {
+    primary: "bg-indigo-900 text-white hover:bg-indigo-800",
+    light: "bg-cyan-300 text-indigo-950 hover:bg-cyan-200",
+    ghost: "bg-transparent text-indigo-900 ring-1 ring-indigo-900/25 hover:bg-indigo-50",
+    ghostDark: "bg-white/5 text-white ring-1 ring-white/25 hover:bg-white/10",
+  };
   return (
     <Link
       href={href}
-      className={`inline-flex min-h-12 items-center justify-center gap-2 whitespace-nowrap rounded-full px-6 py-2.5 font-medium transition-opacity ${buttonStyles[variant]} ${className}`}
+      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 font-bold transition ${styles[variant]} ${className}`}
     >
       {children}
     </Link>
-  );
-}
-
-export function ScheduleButton({ className = "", variant = "primary" }) {
-  return (
-    <ButtonLink href="/contact" variant={variant} className={className}>
-      <IconTodo />
-      <Copy path="site.labels.schedule" />
-    </ButtonLink>
-  );
-}
-
-// The phone number has not been supplied, so this links to the call details on
-// the contact page. Swap for a tel: link once S13 is approved.
-export function CallButton({ className = "", variant = "secondary" }) {
-  return (
-    <ButtonLink href="/contact#call" variant={variant} className={className}>
-      <IconTodo />
-      <Copy path="site.labels.call" />
-    </ButtonLink>
   );
 }

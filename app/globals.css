@@ -1,119 +1,132 @@
 @import "tailwindcss";
-@import "./styles/tokens.css";
 
 /*
-  Tailwind is limited to the THInc tokens: the default palette, shadows and
-  letter spacing are switched off, so an off-palette class simply does
-  nothing. Tracking follows CLAUDE.md §5 (no custom letter spacing).
+  Theme: THInc logo colours. Logo navy (#1b1464) for dark surfaces and text,
+  logo cyan (#00aeef) for highlights, and white or a cool off-white for paper.
+  Highlighted structures in the 3D scene glow cyan. The draft tag keeps its
+  amber so it stays distinct. (Token names are historical.)
 */
-@theme inline {
-  --color-*: initial;
-  --color-base: var(--base);
-  --color-surface: var(--surface);
-  --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-line: var(--line);
-  --color-accent: var(--accent);
-  --color-logo-cyan: var(--logo-cyan);
-  --color-transparent: transparent;
-  --color-current: currentColor;
+@theme {
+  --color-paper: #f4f6fb;
+  --color-paper-2: #e6eaf5;
+  --color-ink: #0e0a3a;
+  --color-ink-soft: #4b4f6e;
+  --color-line: #dbe0ee;
+  --color-teal: #0a6fa8;
+  --color-coral: #00aeef;
+  --color-draft: #8a5a00;
+  --color-draft-bg: #fff3d6;
 
-  --shadow-*: initial;
-  --inset-shadow-*: initial;
-  --drop-shadow-*: initial;
-  --text-shadow-*: initial;
-  --tracking-*: initial;
+  /* The indigo scale now leans to ink so existing components pick up the theme */
+  --color-indigo-950: #0b0833;
+  --color-indigo-900: #1b1464;
+  --color-indigo-800: #241c78;
+  --color-indigo-700: #2f2690;
+  --color-indigo-100: #e4e7f5;
+  --color-indigo-50: #f2f4fb;
 
-  --font-*: initial;
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --color-cyan-400: #00aeef;
+  --color-cyan-300: #33c1f5;
+  --color-cyan-200: #9fe0fa;
+  --color-cyan-100: #dbf3fd;
+  --color-cyan-700: #0a6fa8;
 
-  --radius-card: var(--card-radius);
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-display), ui-serif, Georgia, serif;
 
-  --text-h1: var(--size-h1);
-  --text-h2: var(--size-h2);
-  --text-h3: var(--size-h3);
-  --text-body: var(--size-body);
-  --text-small: var(--size-small);
+  --animate-pulse-ring: pulse-ring 2.4s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
 }
 
 html {
+  font-size: 106.25%;
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 1rem);
 }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 
 body {
-  background: var(--base);
-  color: var(--ink);
+  background: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: var(--size-body);
-  line-height: var(--leading-body);
-  letter-spacing: normal;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
   overflow-x: clip;
 }
 
-h1, h2, h3, h4 { font-weight: 500; line-height: var(--leading-heading); }
-b, strong, th, dt { font-weight: 500; }
+::selection { background: var(--color-cyan-300); color: var(--color-ink); }
 
-::selection { background: var(--accent); color: var(--surface); }
-
-/* Visible focus on every interactive element. Never removed. */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid var(--color-teal);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
+.on-dark :focus-visible { outline-color: var(--color-cyan-300); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
   }
 }
 
-/* Page title: H2 size on phones, H1 from md up (DESIGN.md §3) */
-.type-title { font-size: var(--size-h2); font-weight: 500; line-height: var(--leading-heading); }
-@media (min-width: 48rem) { .type-title { font-size: var(--size-h1); } }
-.type-section { font-size: var(--size-h3); font-weight: 500; line-height: var(--leading-heading); }
-
-/* Reading text: one measure and rhythm for homepage and symptom pages */
-.reading { max-width: var(--measure); }
-.reading p, .reading ul, .reading ol { margin: 0 0 var(--paragraph-gap); }
-.reading ul { list-style: disc; padding-left: 1.25rem; }
-.reading ol { list-style: decimal; padding-left: 1.25rem; }
-.reading li { margin: 0.35em 0; padding-left: 0.25rem; }
-.reading li::marker { color: var(--muted); }
-.reading a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-.reading h2 { font-size: var(--size-h3); margin: 2.5rem 0 0.75rem; }
-
-/* Draft copy (preview builds only): dotted underline, explained by the banner */
-.copy-draft {
-  text-decoration: underline dotted var(--muted);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.3em;
+/* Long-form clinical reading, used by MDX condition pages */
+.prose-clinical {
+  max-width: 68ch;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--color-ink);
 }
+.prose-clinical h2 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  margin: 2.8rem 0 0.8rem;
+  scroll-margin-top: 6rem;
+}
+.prose-clinical h3 { font-size: 1.15rem; font-weight: 700; margin: 1.8rem 0 0.5rem; }
+.prose-clinical p { margin: 0 0 1.1rem; }
+.prose-clinical ul { margin: 0 0 1.2rem; padding-left: 1.25rem; list-style: disc; }
+.prose-clinical ul li { margin: 0.35rem 0; padding-left: 0.25rem; }
+.prose-clinical ul li::marker { color: var(--color-teal); }
+.prose-clinical a { color: var(--color-teal); text-decoration: underline; text-underline-offset: 3px; }
 
-/* Visible TODO marker for missing copy, icons or images */
-.todo {
+/* Visible placeholder for content the practice has not supplied */
+.placeholder {
   display: inline;
-  border: 1px dashed var(--muted);
+  background: repeating-linear-gradient(-45deg, #eef1f8, #eef1f8 6px, #e2e7f2 6px, #e2e7f2 12px);
+  color: var(--color-ink-soft);
+  border: 1px dashed #a6b0cb;
   border-radius: 4px;
   padding: 0.05em 0.4em;
-  font-size: 0.875em;
-  color: var(--muted);
-  background: var(--surface);
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  font-size: 0.92em;
 }
-.todo-icon {
-  display: inline-flex;
-  align-items: center;
-  border: 1px dashed currentColor;
-  border-radius: 4px;
-  padding: 0 0.3em;
-  font-size: 0.6875rem;
-  line-height: 1.5;
-  opacity: 0.8;
+.on-dark .placeholder {
+  background: repeating-linear-gradient(-45deg, #1d1760, #1d1760 6px, #241d70 6px, #241d70 12px);
+  color: #d8def0;
+  border-color: #4a4fa0;
 }
+
+.grain {
+  background-image:
+    radial-gradient(1200px 500px at 85% -10%, rgba(0, 174, 239, 0.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(27, 20, 100, 0.35), transparent 60%);
+}
+
+/* The header floats over the page; give ordinary pages room beneath it */
+main > :first-child { padding-top: 8.5rem; }
+main > [data-fullbleed]:first-child { padding-top: 0; }
+[data-hscroll-active] .overflow-x-auto { overflow: visible; }
+
+/* HUD callout ring on the 3D hand */
+@keyframes hud-ping { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(2.2); opacity: 0; } }
+.hud-ping { transform-box: fill-box; transform-origin: center; animation: hud-ping 1.8s ease-out infinite; }

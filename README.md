@@ -25,6 +25,9 @@ npm run copy:deck      # writes docs/copy/COPY-DECK.md for approval
 
 Draft copy shows (dotted underline) in `npm run dev` only. For a review deploy, build with `NEXT_PUBLIC_COPY_PREVIEW=drafts`. A plain production build shows only approved copy. See `docs/REVIEW-NOTES.md` for open questions.
 
+```bash
+```
+
 ## Stack
 
 - Next.js 16 (App Router), React 19, **JavaScript** (no TypeScript)
